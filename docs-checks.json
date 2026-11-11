@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "include": ["*.md", "docs/**/*.md"],
+  "exclude": [],
+  "allow_placeholders": false
+}

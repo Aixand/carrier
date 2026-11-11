@@ -1,0 +1,17 @@
+[Unit]
+Description=Carrier agent messaging backend
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=exec
+ExecStart=%h/.local/bin/carrier serve --host 127.0.0.1 --port 8765 --db %h/.aixand/carrier/carrier.db
+WorkingDirectory=%h
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+UMask=0077
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=default.target

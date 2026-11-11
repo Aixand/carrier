@@ -1,0 +1,88 @@
+schema = 2
+profile = "workspace"
+# Product releases use SemVer; Python wheels use the equivalent 0.1.0b0.
+
+[workspace]
+name = "carrier"
+version = "0.1.0-beta"
+default-product = "carrier"
+# Declared build targets; qualification status is tracked in docs/installer-validation.md.
+targets = ["linux-x86_64-gnu", "linux-arm64-gnu", "macos-x86_64", "macos-arm64", "windows-x86_64-msvc"]
+
+[sources.filesystem]
+path = "../aixand-libraries/filesystem"
+
+[commands]
+develop = [["uv", "sync", "--frozen", "--python", "3.12.14"]]
+check = [
+  ["uv", "run", "--frozen", "ruff", "check", "carrier", "tests", "scripts"],
+  ["uv", "run", "--frozen", "ruff", "format", "--check", "scripts/carrier_dev.py", "scripts/product_payload.py", "scripts/prepare_runtime.py", "scripts/verify_product.py", "scripts/qualify_installation.py"],
+  ["{python}", "scripts/checks/check-docs.py", "--root", "."],
+  ["{python}", "scripts/checks/check-repository-files.py"],
+]
+test = [
+  ["uv", "run", "--frozen", "python", "-m", "pytest", "-q"],
+]
+
+[components.filesystem]
+adapter = "python"
+source = "filesystem"
+python = "3.12.14"
+verification = [["{python}", "-I", "-c", "import aixand_filesystem; assert callable(aixand_filesystem.lock_file)"]]
+
+[components.carrier]
+adapter = "python"
+python = "3.12.14"
+dependencies = ["filesystem"]
+verification = [["{python}", "-I", "-c", "import carrier"]]
+
+[components.dependencies]
+adapter = "payload"
+build = [["{python}", "-B", "{root}/scripts/product_payload.py", "--output", "{output}", "--target", "{target}"]]
+
+[products.carrier]
+adapter = "python"
+version = "0.1.0-beta"
+components = ["carrier", "dependencies"]
+python = "3.12.14"
+runtimes = ["python"]
+stateful = true
+verification = [["{command:carrier}", "--help"], ["{python}", "-I", "{payload}/share/carrier/verify.py"]]
+
+[products.carrier.commands.carrier]
+program = "share/carrier/launch.py"
+runtime = "python"
+
+[runtimes.python]
+role = "python"
+version = "3.12.14"
+
+[runtimes.python.targets.linux-x86_64-gnu]
+path = "build/runtimes/linux-x86_64-gnu.tar.gz"
+sha256 = "7ce4a71285d913955a76053cc7605ea96da8ecada54dba9cf395245961816421"
+executable = "bin/python3"
+strip = 1
+
+[runtimes.python.targets.linux-arm64-gnu]
+path = "build/runtimes/linux-arm64-gnu.tar.gz"
+sha256 = "4c250ec7cea2aedde2b2e8925d7aaf5ba4924895469d6b5c81c7bdc453341c65"
+executable = "bin/python3"
+strip = 1
+
+[runtimes.python.targets.macos-x86_64]
+path = "build/runtimes/macos-x86_64.tar.gz"
+sha256 = "bd486eadd20259ad1fece28c800205baac0113c3b9cc663ddae495c19ba9db38"
+executable = "bin/python3"
+strip = 1
+
+[runtimes.python.targets.macos-arm64]
+path = "build/runtimes/macos-arm64.tar.gz"
+sha256 = "8b0f1fa71eab7ca644e482c631807a1116fa848491051cd1c8d9429491de63a6"
+executable = "bin/python3"
+strip = 1
+
+[runtimes.python.targets.windows-x86_64-msvc]
+path = "build/runtimes/windows-x86_64-msvc.tar.gz"
+sha256 = "8e6aad12ef6fc9685e67ce66253f8f72d6e8fa02cb7187e5850bd4db5ecd9e2a"
+executable = "python.exe"
+strip = 1

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="256 243 756 756" role="img" aria-labelledby="title">
+  <title id="title">Carrier</title>
+  <defs>
+    <linearGradient id="charcoal" x1="353" y1="381" x2="955" y2="715" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22272a"/>
+      <stop offset="1" stop-color="#252b2d"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="311" y1="636" x2="917" y2="861" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#178e94"/>
+      <stop offset="1" stop-color="#269397"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#charcoal)">
+    <path d="M353 574c23-101 111-174 207-174h266c-12 18-15 42-8 66H560c-70 0-129 42-157 108Z"/>
+    <circle cx="895" cy="440" r="59"/>
+    <path d="M481 546c4-8 12-13 22-13h249c9 0 17 5 21 13L627 638Z"/>
+    <path d="m479 572 145 93q3 2 6 0l145-93v119c0 13-10 24-24 24H503c-13 0-24-10-24-23Z"/>
+  </g>
+  <g fill="url(#teal)">
+    <path d="M860 636h57c-6 114-97 205-218 205H439c12-20 15-43 7-65h253c82 0 147-49 161-140Z"/>
+    <circle cx="371" cy="803" r="59"/>
+  </g>
+</svg>

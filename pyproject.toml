@@ -1,0 +1,48 @@
+[project]
+name = "aixand-carrier-mcp"
+version = "0.1.0b0"
+description = "Durable addressed messaging with an async Python SDK and MCP tools"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+dependencies = [
+    "aixand-lib-filesystem>=0.1.0b0,<0.2", "mcp>=1.20,<2", "fastapi>=0.115,<1", "uvicorn>=0.30,<1", "httpx>=0.27,<1"]
+
+[project.optional-dependencies]
+agent-manager = [
+    "agent-manager[sdk]>=0.1.0b0,<0.2; python_version < '3.15'",
+    "undercurrent-sdk>=0.1.0b0,<0.2; python_version < '3.15'",
+]
+
+[project.urls]
+Homepage = "https://github.com/Aixand/carrier"
+Documentation = "https://github.com/Aixand/carrier/blob/main/docs/README.md"
+Repository = "https://github.com/Aixand/carrier"
+Issues = "https://github.com/Aixand/carrier/issues"
+Changelog = "https://github.com/Aixand/carrier/blob/main/CHANGELOG.md"
+
+[project.scripts]
+carrier = "carrier.cli:main"
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["carrier"]
+
+[dependency-groups]
+dev = ["packaging==26.3", "pytest==8.4.2", "ruff==0.15.7"]
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]
+
+[tool.uv.sources]
+agent-manager = { path = "../manager-suites/agent-manager", editable = true }
+undercurrent-sdk = { path = "../undercurrent/python", editable = true }
+aixand-lib-filesystem = { path = "../aixand-libraries/filesystem", editable = true }
+aixand-lib-local-runtime = { path = "../aixand-libraries/local-runtime", editable = true }

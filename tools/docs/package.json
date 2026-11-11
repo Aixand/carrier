@@ -1,0 +1,9 @@
+{
+  "name": "carrier-docs-tools",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Optional locked Mermaid renderer for Carrier documentation",
+  "license": "Apache-2.0",
+  "engines": {"node": ">=22.13.0"},
+  "devDependencies": {"@mermaid-js/mermaid-cli": "12.0.0"}
+}

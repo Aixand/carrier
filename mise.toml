@@ -1,0 +1,23 @@
+[tools]
+python = "3.12.14"
+uv = "0.12.7"
+
+[tasks.setup]
+description = "Create the virtual environment and install Carrier and test dependencies"
+run = "python scripts/carrier_dev.py develop"
+
+[tasks.check]
+description = "Check Python, documentation, and repository file policies"
+run = "python scripts/carrier_dev.py check"
+
+[tasks.serve]
+description = "Run the shared Carrier service on localhost:8765"
+run = ".venv/bin/carrier serve"
+
+[tasks.test]
+description = "Run Carrier and local checker regression tests"
+run = "python scripts/carrier_dev.py test"
+
+[tasks.carrier]
+description = "Run the Carrier CLI (append session or mcp arguments)"
+run = ".venv/bin/carrier"

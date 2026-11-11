@@ -1,0 +1,9 @@
+Carrier
+
+Carrier includes installation helpers adapted from Aixand/installation-template,
+documentation standards and checks from Aixand/docs-template, and repository
+policy tooling from Aixand/open-source-template. These templates distribute
+their original material under the Apache License, Version 2.0.
+
+Third-party dependencies retain their respective licenses and notices. Native product bundles include notices collected from their
+component sources and dependency wheels.
