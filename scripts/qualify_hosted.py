@@ -19,7 +19,10 @@ import urllib.request
 
 
 def fetch(url):
-    with urllib.request.urlopen(url, timeout=60) as response:
+    request = urllib.request.Request(
+        url, headers={"User-Agent": "Aixand-Carrier-Installer-Qualification/1.0"}
+    )
+    with urllib.request.urlopen(request, timeout=60) as response:
         if not response.url.startswith("https://"):
             raise RuntimeError("Installer delivery must remain HTTPS")
         data = response.read(1024 * 1024 + 1)
