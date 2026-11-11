@@ -242,7 +242,7 @@ def main():
 
         def interactive(name, answer, expected=0):
             if windows:
-                driver = root / (name + ".ps1")
+                driver = root / ("driver-" + name + ".ps1")
                 literal = lambda value: "'" + str(value).replace("'", "''") + "'"
                 driver.write_text(
                     "$ErrorActionPreference = 'Stop'\nfunction Read-Host { param($Prompt) "
