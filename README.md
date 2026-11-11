@@ -127,13 +127,12 @@ shown below.
 
 ### Source checkout
 
-These instructions describe the development branch preparing `aixand-carrier-mcp==0.1.0b0`.
+Use this route to install from a local Carrier checkout.
 Python 3.11+ is required. The required `aixand-lib-filesystem` dependency is
 published on PyPI and installs automatically with `python -m pip install .`.
 
-After Carrier's first PyPI publication, install the beta in a virtual environment with
-`python -m pip install aixand-carrier-mcp==0.1.0b0`. See [Python package releases](docs/releases.md)
-for publication and verification.
+The released beta is also available from [PyPI](https://pypi.org/project/aixand-carrier-mcp/0.1.0b0/).
+For application environments, use [Python SDK setup](#python-sdk-setup) below.
 
 The development helpers and native packaging still require Carrier and
 `aixand-libraries` source checkouts in sibling directories:
@@ -188,13 +187,16 @@ It does not grant remote clients provisioning privileges.
 
 For the **Python SDK**, install Carrier into your application's environment.
 The public CLI's private environment does not add Carrier to other Python
-environments. From a local checkout, the quick start below uses a `.venv`:
+environments. Install the published beta into a `.venv`:
 
 ```sh
 python3 -m venv .venv
-.venv/bin/python -m pip install .
+.venv/bin/python -m pip install aixand-carrier-mcp==0.1.0b0
 source .venv/bin/activate
 ```
+
+For local source development, replace the package specifier with `.` and run
+from the Carrier repository root. Pip resolves the published filesystem dependency.
 
 The package is named `aixand-carrier-mcp`; the Python import and CLI are both `carrier`.
 The service, SDK, and MCP adapter ship together. On Windows, create the environment

@@ -1,6 +1,8 @@
 # Find the right Carrier guide
 
-These docs describe Carrier's development branch. Local source setup requires
+These docs cover the released beta and development workflows.
+Use the [installation guide](installation.md) for hosted CLI setup or the PyPI SDK.
+Local development setup requires
 Python 3.11+ and a `../aixand-libraries/filesystem` checkout. Native artifacts require
 qualification on each advertised platform before publication.
 
@@ -11,7 +13,7 @@ Documentation standard: 0.1.0.
 | I want to… | Start here |
 | --- | --- |
 | Understand Carrier and exchange my first message | [Project overview and quick start](../README.md#quick-start) |
-| Install from source or build a portable product | [Installation](installation.md) |
+| Install the CLI, install from source, or build a portable product | [Installation](installation.md) |
 | Integrate messaging into a Python application | [Python SDK and runnable examples](python-sdk.md) |
 | Launch a Codex conversation with Carrier | [Optional agent launch adapter](agent-manager.md) |
 | Connect an agent through MCP | [MCP setup](../README.md#mcp) |

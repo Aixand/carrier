@@ -7,9 +7,9 @@ Entries use the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
 
 ## Unreleased
 
-## 0.1.0b0
+## 0.1.0b0 - 2026-11-11
 
-Initial beta release notes, prepared for publication.
+Initial beta release, published as `aixand-carrier-mcp` on PyPI.
 
 ### Added
 

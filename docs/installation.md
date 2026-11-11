@@ -11,7 +11,7 @@ This guide describes local source builds and supplied artifacts on the developme
 branch. The [native release workflow](releases.md#publish-native-standalone-downloads)
 prepares public archives; hosted endpoints require separate catalog registration.
 For Python applications, `python -m pip install .` from the Carrier root resolves
-the published filesystem dependency automatically. After Carrier is published,
+the published filesystem dependency automatically. To install the released beta,
 use `python -m pip install aixand-carrier-mcp==0.1.0b0` in your application environment.
 See [Python package releases](releases.md) for publication and verification.
 
@@ -20,6 +20,29 @@ commands in the user's product store. Private scope installs commands
 inside an application's explicit store and records that application's owner.
 Scope changes ownership and location; it does not change the packaged Carrier
 service or imply that installing a CLI starts a service.
+
+## Install the hosted CLI and service
+
+On Linux x64 or macOS Intel/ARM64, run from any directory with network access,
+curl, tar, and a SHA-256 utility:
+
+```sh
+curl -fsSL https://installer.aixand.org/carrier | sh
+carrier --version
+carrier --help
+```
+
+Confirm the installation and any license prompt in your terminal. The endpoint
+selects a fixed native beta release and verifies its archive before installation.
+It bundles Python and dependencies; no system Python or source checkout is required.
+Expect version `0.1.0-beta`. If `carrier` is not found, add `~/.local/bin` to PATH
+and check for an existing command that setup preserved.
+
+Start the service with `carrier serve`; installation starts no service. Application
+SDK environments use the PyPI package separately. For Windows PowerShell setup,
+see [the README installation instructions](../README.md#installation).
+Linux ARM64 uses supplied native artifacts; the current hosted shell endpoint
+supports Linux x64 and macOS Intel/ARM64.
 
 ## Source checkout prerequisites
 

@@ -11,18 +11,18 @@ run against a local service with separate identities.
 [Retries and errors](#retry-and-compatibility-contract) · [Delivery targets](#composing-delivery-targets)
 
 For the standalone CLI and service, use the
-[local source installer](../README.md#installation).
+[standalone installer](../README.md#installation).
 Python applications need Carrier in their own environment; the CLI's private
 environment does not make `import carrier` available elsewhere.
 
-For local SDK development and these examples, install this repository into a
-Python 3.11+ virtual environment from the repository root. Pip installs the
+For these examples, install the published beta into a Python 3.11+ virtual
+environment. Run from the repository root to use the included examples. Pip installs the
 published `aixand-lib-filesystem` dependency automatically:
 
 ```sh
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install .
+python -m pip install aixand-carrier-mcp==0.1.0b0
 ```
 
 The distribution is `aixand-carrier-mcp`; the import is `carrier`. The service, CLI,
@@ -30,11 +30,11 @@ MCP adapter, and SDK ship together. Upgrade the service as well as the client to
 use addressed sends and replies. No agent runtime is needed for these examples.
 
 On Windows, use PowerShell with `py -3 -m venv .venv`, then
-`.venv\Scripts\python.exe -m pip install .`.
+`.venv\Scripts\python.exe -m pip install aixand-carrier-mcp==0.1.0b0`.
 Activate with `.venv\Scripts\Activate.ps1`, or invoke scripts with the environment's
 Python and use `.venv\Scripts\carrier.exe` for CLI commands.
-After Carrier is published, use `python -m pip install aixand-carrier-mcp==0.1.0b0`
-instead of installing the checkout.
+For local source development, use `python -m pip install .` from the Carrier
+repository root instead of the published package specifier.
 See [troubleshooting](troubleshooting.md) if installation fails.
 
 ## Identity and setup
