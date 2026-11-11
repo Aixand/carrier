@@ -134,3 +134,19 @@ After publication, anonymously verify each actual download and register those
 bytes with the hosted installer. Keep the same handoff and product identity for
 Suite reuse. Native downloads do not add the SDK to another application's Python
 environment; SDK consumers use the Python package route above.
+
+
+## Qualify the hosted installer
+
+After the public archives are registered as an exact version, keep the hosted
+beta channel disabled while testing. Deploy that staged catalog, then run
+[Qualify hosted installer](../.github/workflows/hosted-installer.yml) with the exact
+registered version. The workflow reads the public catalog and versioned scripts;
+it does not need access to the private installer repository.
+
+The four hosted targets check confirmation and cancellation, archive hash
+rejection, real shared/private stores, command versions, existing command
+preservation, repeat setup, and uninstall preserving separate runtime data.
+Checks use disposable homes and product stores. Windows skips user PATH changes.
+The existing native lifecycle workflow separately verifies real messaging and
+upgrade behavior. Enable the hosted beta channel only after these checks pass.

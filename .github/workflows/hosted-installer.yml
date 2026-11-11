@@ -1,0 +1,38 @@
+name: Qualify hosted installer
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact public Carrier release staged in the hosted catalog
+        required: true
+        default: 0.1.0-beta
+permissions:
+  contents: read
+jobs:
+  hosted:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-15-intel, macos-15, windows-2022]
+    env:
+      NATIVE_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
+      - name: Check exact public wrapper in disposable homes
+        if: runner.os != 'Windows'
+        run: python3 scripts/qualify_hosted.py --version "$NATIVE_VERSION" --report dist/hosted-report.json
+      - name: Check Windows wrapper without changing user PATH
+        if: runner.os == 'Windows'
+        run: python scripts/qualify_hosted.py --version $env:NATIVE_VERSION --report dist/hosted-report.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: hosted-installer-${{ matrix.os }}
+          path: |
+            dist/hosted-report.json
+            dist/hosted-report.logs/
+          if-no-files-found: warn
