@@ -137,7 +137,8 @@ Its native payload bundles CPython, Carrier, and dependency wheels. Read the
 [installation guide](docs/installation.md) for packaging, private scope, bootstraps,
 updates, and uninstall. The [installer validation guide](docs/installer-validation.md)
 explains lifecycle checks and native qualification requirements.
-Hosted native installers are not provided by this checkout. Python package
+Native release publication uses the [qualified archive workflow](docs/releases.md#publish-native-standalone-downloads).
+Hosted installation still requires verified catalog registration. Python package
 publication uses the [tag-to-PyPI workflow](docs/releases.md).
 
 Start the messaging service explicitly with `carrier serve`. Carrier databases

@@ -21,7 +21,7 @@ Documentation standard: 0.1.0.
 | Change Carrier and run local checks | [Development](development.md) · [Participation policy](../CONTRIBUTING.md) |
 | Validate an installer artifact | [Installer validation](installer-validation.md) |
 | Report a vulnerability or get support | [Security](../SECURITY.md) · [Support](../SUPPORT.md) |
-| Publish a Python package from a version tag | [PyPI releases](releases.md) |
+| Publish Python packages or native standalone downloads | [Releases](releases.md) |
 | Review changes and licensing | [Changelog](../CHANGELOG.md) · [License](../LICENSE) · [Notices](../NOTICE) |
 
 ## Maintain these docs

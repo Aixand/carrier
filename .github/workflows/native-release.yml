@@ -1,0 +1,91 @@
+name: Native release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Exact product version (installation.toml SemVer)
+        required: true
+        default: 0.1.0-beta
+      libraries_ref:
+        description: Reviewed aixand-libraries full commit SHA
+        required: true
+        default: f225e45d0b39cec40fc7296ea8d685150fecd409
+      publish:
+        description: Publish immutable GitHub downloads after all native checks pass
+        type: boolean
+        required: true
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: carrier-native-release
+  cancel-in-progress: false
+jobs:
+  qualify:
+    uses: ./.github/workflows/installer.yml
+    with:
+      libraries_ref: ${{ inputs.libraries_ref }}
+      release_version: ${{ inputs.version }}
+  collect:
+    needs: qualify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      NATIVE_VERSION: ${{ inputs.version }}
+      LIBRARIES_REF: ${{ inputs.libraries_ref }}
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: native-download-*
+          path: dist/assets
+          merge-multiple: true
+      - name: Verify complete native matrix and generate checksums
+        run: python3 scripts/release/native.py collect --version "$NATIVE_VERSION" --libraries-ref "$LIBRARIES_REF" --commit "$GITHUB_SHA"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: qualified-native-release
+          path: dist/assets/*
+          if-no-files-found: error
+  publish:
+    if: inputs.publish && github.ref == 'refs/heads/main' && github.repository == 'Aixand/carrier'
+    needs: collect
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: release
+    permissions:
+      contents: write
+    env:
+      NATIVE_VERSION: ${{ inputs.version }}
+      LIBRARIES_REF: ${{ inputs.libraries_ref }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: qualified-native-release
+          path: dist/assets
+      - name: Verify checksums before uploading
+        run: cd dist/assets && sha256sum --check SHA256SUMS
+      - name: Create a new immutable native release
+        shell: bash
+        run: |
+          tag="v$NATIVE_VERSION"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo 'Release already exists. Published files must never be replaced.' >&2
+            exit 1
+          fi
+          if git rev-parse --verify "refs/tags/$tag^{commit}" >/dev/null 2>&1; then
+            test "$(git rev-parse "refs/tags/$tag^{commit}")" = "$GITHUB_SHA"
+          fi
+          printf 'Carrier CLI, service, MCP adapter, and private Python runtime.\n\nSource: %s\nLibraries: %s\n\nNative installation, upgrade, data preservation, and Python-free bootstrap checks passed on every packaged target.\nThe hosted installer catalog is registered separately.\n' "$GITHUB_SHA" "$LIBRARIES_REF" > dist/native-notes.md
+          prerelease=()
+          if [[ "$NATIVE_VERSION" == *-* ]]; then prerelease=(--prerelease); fi
+          gh release create "$tag" dist/assets/* --target "$GITHUB_SHA" --draft "${prerelease[@]}" --title "Carrier $NATIVE_VERSION native downloads" --notes-file dist/native-notes.md
+          gh release edit "$tag" --draft=false

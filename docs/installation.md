@@ -8,7 +8,8 @@ and Windows x64. Declared targets become supported releases only after native
 qualification. See [installer validation](installer-validation.md).
 
 This guide describes local source builds and supplied artifacts on the development
-branch. Public native installer endpoints are not provided by this checkout.
+branch. The [native release workflow](releases.md#publish-native-standalone-downloads)
+prepares public archives; hosted endpoints require separate catalog registration.
 For Python applications, `python -m pip install .` from the Carrier root resolves
 the published filesystem dependency automatically. After Carrier is published,
 use `python -m pip install aixand-carrier-mcp==0.1.0b0` in your application environment.

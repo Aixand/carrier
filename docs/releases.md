@@ -1,4 +1,4 @@
-# Publish Carrier to PyPI
+# Publish Carrier releases
 
 The [Python package workflow](../.github/workflows/publish.yml) builds and checks
 `aixand-carrier-mcp` on pushes to `main`, pull requests, and manual runs. Pushing a `v*`
@@ -84,4 +84,53 @@ and environment values. Rerun a failed job only after checking whether PyPI
 already received any files.
 
 This workflow publishes Python packages. Native standalone artifacts use the
-separate [installer qualification procedure](installer-validation.md).
+separate workflow below.
+
+
+## Publish native standalone downloads
+
+The [Native release workflow](../.github/workflows/native-release.yml) builds
+Carrier with a private CPython runtime and locked dependencies. Users do not need
+system Python, uv, Rust, or a source checkout. It publishes GitHub downloads;
+the hosted installer catalog is a separate registration and deployment step.
+
+Run from a clean Carrier checkout after committing and pushing the release changes
+to `main`. The `version` input must exactly match `installation.toml`. Pin
+`libraries_ref` to a reviewed full commit SHA in `Aixand/aixand-libraries`.
+Both Carrier and its dependency must be clean, committed inputs. Use a new version
+for changed public bytes. Native tags use product SemVer, such as `v0.1.0-beta`;
+PyPI tags use the Python package version, such as `v0.1.0b0`.
+
+In GitHub Actions, select **Native release**, branch **main**, the exact version,
+and the dependency commit. Leave **publish** unchecked for qualification only.
+For a release, select **publish**; the release job still waits for all native
+checks. The `release` GitHub environment can enforce repository approval rules.
+
+The workflow qualifies Linux GNU x64/ARM64, macOS Intel/ARM64, and Windows x64.
+Each native host runs repository checks, tests, actual product installation,
+next-version upgrade, data preservation, and the Python-free bootstrap. It then
+exports the handoff and creates the versioned archive. The collector requires all
+five targets with matching source commits and evidence before generating
+`SHA256SUMS`. A failed target prevents publication.
+
+Downloads use these names, with `VERSION` and `TARGET` replaced by their exact
+values:
+
+- `carrier-VERSION-TARGET.tar.gz` on Linux and macOS.
+- `carrier-VERSION-windows-x86_64-msvc.zip` on Windows.
+- `SHA256SUMS` for the complete archive set.
+
+Each archive includes its product objects, bootstrap, descriptor, installation
+proof, lifecycle report, and release metadata. The `carrier` command launches the
+packaged Python implementation; no separately compiled Carrier service is needed.
+Windows still builds the product engine's native command launcher.
+
+Publication creates a draft, uploads the checked files, then publishes it.
+Existing releases are rejected rather than overwritten. If uploading fails,
+inspect the retained draft and workflow artifacts. Do not replace published
+files or rerun against an existing public version.
+
+After publication, anonymously verify each actual download and register those
+bytes with the hosted installer. Keep the same handoff and product identity for
+Suite reuse. Native downloads do not add the SDK to another application's Python
+environment; SDK consumers use the Python package route above.
