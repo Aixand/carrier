@@ -188,9 +188,10 @@ verification. Keep the generated bootstrap and lifecycle report alongside it.
 Export does not publish. Public catalog integration, hosting, and native release
 qualification remain separate publication work.
 
-Before an immutable release, source changes must be committed, dependency sources
-pinned/reviewed, and the product tag `carrier/v<version>` checked with
-`release-check`. Carrier uses [Apache-2.0](../LICENSE), declared in package metadata.
+Before an immutable native release, commit source changes and review/pin dependency
+sources. The [native release workflow](releases.md#publish-native-standalone-downloads)
+checks the exact version, clean commits, and bound native evidence before publishing
+a `vVERSION` tag. Carrier uses [Apache-2.0](../LICENSE), declared in package metadata.
 Python distributions include the license and [NOTICE](../NOTICE); native products
 also carry first-party and dependency notices. Review all distributed components
 and their notices before publishing an immutable release.

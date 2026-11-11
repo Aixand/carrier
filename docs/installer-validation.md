@@ -48,8 +48,8 @@ A local Linux result does not qualify Windows, macOS, Linux ARM64, or an older
 operating system. Run the [native installer workflow](../.github/workflows/installer.yml)
 on each advertised target and verify clean-machine and minimum-OS behavior.
 `AIXAND_LIBRARIES_REPOSITORY` defaults to `Aixand/aixand-libraries`; override it
-for another accessible library repository. `AIXAND_LIBRARIES_REF` selects its
-revision for custom runs. The tracked workflow pins its default dependency commit;
+for another accessible library repository. The native release workflow's `libraries_ref` input selects its
+revision. The tracked workflow pins its default dependency commit;
 release runs require an explicit full commit SHA. The workflow provisions pinned Python through uv
 on all targets. Intel macOS builds cryptography from its checksum-verified locked source with
 static OpenSSL because upstream no longer supplies Intel macOS wheels.

@@ -98,6 +98,35 @@ recording harness; this repository does not include that harness.
 
 ## Installation
 
+### Standalone CLI and service
+
+Install the `0.1.0-beta` native release on Linux x64 or macOS Intel/ARM64:
+
+```sh
+curl -fsSL https://installer.aixand.org/carrier | sh
+carrier --version
+```
+
+Confirm the installation when prompted. Setup verifies a fixed release and
+provides a private Python runtime and dependencies. No system Python, uv, Rust,
+or source checkout is needed. Linux/macOS may need `~/.local/bin` added to PATH.
+Existing commands are preserved.
+
+On Windows x64, run in PowerShell 5.1+:
+
+```powershell
+Invoke-WebRequest -UseBasicParsing -Uri 'https://installer.aixand.org/carrier/install.ps1' -OutFile install-carrier.ps1
+.\install-carrier.ps1
+```
+
+Open a new terminal afterward for the user PATH change. Local script execution
+policy applies. Installation starts no service; run `carrier serve` explicitly.
+Databases and credentials remain separate from the installed software. The SDK
+for your own Python application belongs in that application's environment, as
+shown below.
+
+### Source checkout
+
 These instructions describe the development branch preparing `aixand-carrier-mcp==0.1.0b0`.
 Python 3.11+ is required. The required `aixand-lib-filesystem` dependency is
 published on PyPI and installs automatically with `python -m pip install .`.
@@ -138,7 +167,7 @@ Its native payload bundles CPython, Carrier, and dependency wheels. Read the
 updates, and uninstall. The [installer validation guide](docs/installer-validation.md)
 explains lifecycle checks and native qualification requirements.
 Native release publication uses the [qualified archive workflow](docs/releases.md#publish-native-standalone-downloads).
-Hosted installation still requires verified catalog registration. Python package
+Hosted installation uses the verified public release catalog. Python package
 publication uses the [tag-to-PyPI workflow](docs/releases.md).
 
 Start the messaging service explicitly with `carrier serve`. Carrier databases
