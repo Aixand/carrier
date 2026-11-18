@@ -15,50 +15,12 @@ For the standalone CLI and service, use the
 Python applications need Carrier in their own environment; the CLI's private
 environment does not make `import carrier` available elsewhere.
 
-For these examples, install the published beta into a Python 3.11+ virtual
-environment. Run from the repository root to use the included examples. Pip installs the
-published `aixand-lib-filesystem` dependency automatically:
-
-```sh
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install aixand-carrier-mcp==0.1.0b0
-```
-
-The distribution is `aixand-carrier-mcp`; the import is `carrier`. The service, CLI,
-MCP adapter, and SDK ship together. Upgrade the service as well as the client to
-use addressed sends and replies. No agent runtime is needed for these examples.
-
-On Windows, use PowerShell with `py -3 -m venv .venv`, then
-`.venv\Scripts\python.exe -m pip install aixand-carrier-mcp==0.1.0b0`.
-Activate with `.venv\Scripts\Activate.ps1`, or invoke scripts with the environment's
-Python and use `.venv\Scripts\carrier.exe` for CLI commands.
-For local source development, use `python -m pip install .` from the Carrier
-repository root instead of the published package specifier.
-See [troubleshooting](troubleshooting.md) if installation fails.
-
 ## Identity and setup
 
-Run all commands from the repository root. Provision these identities **once**,
-then start the service in the first terminal:
-
-```sh
-carrier session sdk/requester --db .carrier/sdk/carrier.db --credentials .carrier/sdk/requester.json
-carrier session sdk/report-worker --db .carrier/sdk/carrier.db --credentials .carrier/sdk/worker.json
-carrier session sdk/build-events --db .carrier/sdk/carrier.db --credentials .carrier/sdk/events.json
-carrier serve --db .carrier/sdk/carrier.db --port 8877
-```
-
-The examples use port **8877** and `.carrier/sdk/`, separate from the README's
-quick start and the default service database. Keep the database and credentials
-when restarting; provisioning refuses to overwrite existing credential files.
-The `.carrier/` directory is ignored by Git. Activate the same virtual environment
-in each additional terminal.
-
-Each script accepts `--url` and `--credentials` to use another installation.
-Provisioning and serving must use the same database. Only one active receiving
-owner should use an inbox at a time; the report worker and event archiver have
-separate inboxes.
+Install the SDK in [your application environment](getting-started/install.md#install-the-python-sdk).
+Use [shared example setup](guides/example-setup.md) for the supplied scripts.
+The optional [Manager Suite integration](integrations/manager-suite.md) has its
+own dependencies; core messaging does not require managers or a provider runtime.
 
 `Client(url=..., credentials=...)` loads an existing address/token file and checks
 that the token authenticates that address. Alternatively, supply `token=...` alone.
@@ -73,160 +35,23 @@ Carrier does not maintain presence, consumer registrations, or delivery-target t
 
 ## Runnable examples
 
-| Use case | Runnable source | SDK features |
-| --- | --- | --- |
-| Ask a background worker to summarize CI results | [Requester](../examples/request_report.py) · [Worker](../examples/report_worker.py) | JSON messages, correlated replies, async consumers |
-| Publish build events, including while a recipient is offline | [Event publisher](../examples/publish_build_event.py) | Stable retry keys, delivery status, typed errors |
-| Catch up after downtime without duplicating archived events | [Event archiver](../examples/archive_events.py) | Pending-message pagination, durable processing, explicit acknowledgment |
+Use the [example catalog](examples/README.md) for runnable workflows and expected
+results. Start with [shared setup](guides/example-setup.md).
 
 ### Request a CI report from a worker
 
-Use this pattern when a dashboard, coordinator, or agent-facing application needs
-a result from another program. The worker returns a summary of named CI checks;
-the requester waits for the reply to its specific message.
-
-In a second terminal, start the worker:
-
-```sh
-python examples/report_worker.py
-```
-
-Expect `Listening as sdk/report-worker; press Ctrl+C to stop.` Leave it running.
-In a third terminal, request a report:
-
-```sh
-python examples/request_report.py --build-id build-1842
-```
-
-The requester sends sample lint, unit, and integration check results and prints:
-
-```json
-{
-  "build_id": "build-1842",
-  "checks": 3,
-  "failed": [
-    "integration"
-  ],
-  "status": "failed"
-}
-```
-
-The sample contains one failed check, so `failed` is the report's expected result.
-Replace the `checks` mapping in the requester with results from your own CI job.
-
-With a connected client named `inbox`, the core calls inside an async function are:
-
-```python
-question = await inbox.send_json(
-    {"build_id": "build-1842", "checks": {"lint": "passed", "integration": "failed"}},
-    to="sdk/report-worker",
-)
-answer = await inbox.wait_for_reply(question, timeout=30)
-print(answer.json())
-await answer.ack()
-```
-
-The full requester also supplies a retry key for its send. The worker registers
-an `@inbox.consumer()` handler, sends `message.reply_json()`, and explicitly calls
-`message.ack()`. `await inbox.run()` keeps receiving until stopped. The requester
-acknowledges the reply after displaying it. The worker's reply key is derived
-from the incoming numeric message ID, so retrying that handler with the same
-report does not store a second reply.
-
-To try offline delivery, stop the worker with Ctrl+C, run another request, then
-restart the worker before the requester's 30-second deadline. The stored request
-is still available. `--timeout 5` gives a shorter wait; a timeout ends the local
-wait without canceling the stored request. It prints the request ID so you can
-later inspect `receive(reply_to=...)` history. Each invocation creates a new
-request and retry key; rerunning this script is a new request, not recovery of
-the previous one. The next example shows how to reuse a key across invocations.
+[Request a CI report](examples/request-report.md) covers JSON requests, a local
+consumer, stable reply keys and correlated responses.
 
 ### Publish build events safely across retries
 
-Use this pattern for CI notifications or application events whose recipients may
-be offline. The build system supplies a stable build ID, allowing a restarted
-producer to reconstruct the same event key and payload.
-
-No event consumer needs to be running. Publish the same completed build twice:
-
-```sh
-python examples/publish_build_event.py build-1842 --status passed
-python examples/publish_build_event.py build-1842 --status passed
-```
-
-Both calls print the **same numeric message ID** with status `stored`. Only one
-message is stored in `sdk/build-events`. The key is `build.finished:build-1842`;
-it is independent of the report requests from the previous example.
-
-Inside the publisher's async function, the SDK calls are:
-
-```python
-key = "build.finished:build-1842"
-message = await inbox.send_json(
-    {"type": "build.finished", "build_id": "build-1842", "status": "passed"},
-    to="sdk/build-events",
-    idempotency_key=key,
-)
-status = await inbox.delivery_status(key)
-print(message.id, status["status"])
-```
-
-If a transport error leaves delivery uncertain, rerun the
-same command with the same credentials, build ID, status, and recipient. The
-script reports the uncertainty; the SDK does not automatically replay the send.
-Changing the status for an existing key produces a `ConflictError`, which the
-script explains. Use a new build ID for a new event.
-
-Keep the payload stable on retries: adding the current time or generating a new
-key on every invocation would change this behavior. In an application, retain
-the original event data in your own durable storage. `stored` confirms Carrier
-has the event; it does not mean a recipient has handled it.
+[Retry-safe publishing](examples/retry-safe-send.md) retains the same payload and
+key across producer invocations.
 
 ### Recover an inbox and archive its events
 
-Use this pattern for a local event journal or an integration that catches up
-after downtime. It saves each message into a separate SQLite archive and commits
-that transaction **before** acknowledging the Carrier message.
-
-After publishing the event above, run:
-
-```sh
-python examples/archive_events.py
-```
-
-For a fresh example inbox, expect:
-
-```text
-Accepted 1 pending event(s); archive: .carrier/sdk/event-archive.db
-```
-
-Run it again and the count is zero. Repeating the publisher's original command
-reports that same message as `acknowledged`; it does not enqueue a new event.
-The archive preserves the sender, content, timestamp, and Carrier message ID.
-
-To exercise pagination, publish three new builds and use two-message pages:
-
-```sh
-python examples/publish_build_event.py build-1843
-python examples/publish_build_event.py build-1844 --status failed
-python examples/publish_build_event.py build-1845
-python examples/archive_events.py --page-size 2
-```
-
-Expect `Accepted 3 pending event(s)` on the final run. The archiver follows
-`next_after` within that scan and starts at zero on each new invocation. It does
-not persist the pending-page cursor, so an older unacknowledged message is still
-eligible after recovery.
-
-The archive key combines the backend URL, inbox address, and message ID. If the
-process stops after committing the row but before acknowledging it, the next run
-finds the same pending message, reuses the archived row, and acknowledges it.
-Keep using the same archive and backend database across restarts; if you replace
-the backend database, choose a fresh `--archive` path because IDs may be reused.
-
-This example makes local archive inserts safe to repeat. Carrier cannot make
-unrelated API calls or other application side effects exactly once. For those,
-use the destination's own idempotency support or a durable record of work.
+[Offline recovery](examples/offline-recovery.md) commits an archive row before
+acknowledgment and scans pending pages from zero on each invocation.
 
 ## Local consumers
 

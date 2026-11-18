@@ -40,14 +40,14 @@ and check for an existing command that setup preserved.
 
 Start the service with `carrier serve`; installation starts no service. Application
 SDK environments use the PyPI package separately. For Windows PowerShell setup,
-see [the README installation instructions](../README.md#installation).
+see [the application installation guide](getting-started/install.md#install-the-native-cli).
 Linux ARM64 uses supplied native artifacts; the current hosted shell endpoint
 supports Linux x64 and macOS Intel/ARM64.
 
 ## Source checkout prerequisites
 
 Obtain Carrier and `aixand-lib-filesystem` from the same source workspace. Both are
-required sources for local development, source installation, and packaging:
+required sources for the development helper, helper-based source installation, and packaging:
 
 ```text
 workspace/

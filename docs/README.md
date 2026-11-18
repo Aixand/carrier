@@ -1,39 +1,38 @@
 # Find the right Carrier guide
 
-These docs cover the released beta and development workflows.
-Use the [installation guide](installation.md) for hosted CLI setup or the PyPI SDK.
-Local development setup requires
-Python 3.11+ and a `../aixand-libraries/filesystem` checkout. Native artifacts require
-qualification on each advertised platform before publication.
-
+Carrier gives programs and agents durable inboxes through Python or MCP.
+These guides describe the current source checkout; installation identifies the
+released `0.1.0-beta` path. Optional manager APIs require matching current sources.
 Documentation standard: 0.1.0.
 
-## Choose a reader goal
+## Get started
 
-| I want to… | Start here |
+| Goal | Read |
 | --- | --- |
-| Understand Carrier and exchange my first message | [Project overview and quick start](../README.md#quick-start) |
-| Install the CLI, install from source, or build a portable product | [Installation](installation.md) |
-| Integrate messaging into a Python application | [Python SDK and runnable examples](python-sdk.md) |
-| Launch a Codex conversation with Carrier | [Optional agent launch adapter](agent-manager.md) |
-| Connect an agent through MCP | [MCP setup](../README.md#mcp) |
-| Look up CLI options and state locations | [CLI reference](cli.md) |
-| Understand service and consumer responsibilities | [Architecture](../README.md#architecture) · [Delivery semantics](../README.md#delivery-semantics) |
-| Diagnose errors or recover a local service | [Troubleshooting](troubleshooting.md) |
-| Change Carrier and run local checks | [Development](development.md) · [Participation policy](../CONTRIBUTING.md) |
-| Validate an installer artifact | [Installer validation](installer-validation.md) |
-| Report a vulnerability or get support | [Security](../SECURITY.md) · [Support](../SUPPORT.md) |
-| Publish Python packages or native standalone downloads | [Releases](releases.md) |
-| Review changes and licensing | [Changelog](../CHANGELOG.md) · [License](../LICENSE) · [Notices](../NOTICE) |
+| Install the CLI or SDK | [Installation](getting-started/install.md) |
+| Verify one complete exchange | [Quick start](quickstart.md) |
+| Run application examples | [Example catalog](examples/README.md) · [Shared setup](guides/example-setup.md) |
+| Configure agent tools | [MCP setup](guides/mcp.md) |
+| Compose Manager Suite | [Integration map](integrations/manager-suite.md) |
 
-## Maintain these docs
+## Understand and develop
 
-Authors follow the [documentation standard](_standards/README.md).
-The [development guide](development.md#check-documentation) owns local validation
-and diagram rendering commands. The checker validates repository Markdown;
-examples, external destinations, and publishing renderers need separate verification.
+| Question | Read |
+| --- | --- |
+| What owns each responsibility? | [Runtime architecture](architecture/runtime.md) |
+| What does delivery guarantee? | [Concepts](concepts.md) · [Delivery lifecycle](lifecycles/delivery.md) |
+| What persists? | [Storage](architecture/storage.md) |
+| Who can access an inbox? | [Identity and trust](architecture/trust.md) |
+| What are the public contracts? | [Python SDK](python-sdk.md) · [HTTP](reference/http.md) · [CLI](cli.md) |
+| How do native agent conversations bind? | [Codex adapter](agent-manager.md) |
+| How do budget events arrive? | [Budget ingestion](reference/budget.md) |
+| How do I diagnose or recover? | [Operations](guides/operations.md) · [Troubleshooting](troubleshooting.md) |
+| How do I change or publish Carrier? | [Development](development.md) · [Releases](releases.md) |
 
-Carrier's implementation owns its service, CLI, SDK, and MCP contracts.
-Other applications own consumer scheduling, side effects, and agent launch.
-Local checks do not configure repository protections, publish packages, or deploy
-hosted installers.
+## Maintainer and policy references
+
+[Product installation](installation.md), [installer qualification](installer-validation.md),
+[documentation standards](_standards/README.md), [participation](../CONTRIBUTING.md),
+[security](../SECURITY.md), [support](../SUPPORT.md), [changelog](../CHANGELOG.md),
+[license](../LICENSE) and [notices](../NOTICE) remain source-owned references.
+Selected site pages are declared in [publication.json](publication.json).

@@ -37,6 +37,9 @@ python3 scripts/checks/install-file-policy-hook.py
 See [the file policy](../REPOSITORY_FILES.md) for existing hook managers and history
 checks. Local hooks do not enable repository protections.
 
+For standalone source CLI setup, reinstall, custom paths and migration, use
+[development CLI installation](development/local-install.md).
+
 ## Find the implementation
 
 | Responsibility | Owning source |
@@ -71,6 +74,21 @@ uv run --locked python -m pytest -q tests/test_installer_routing.py tests/test_d
 The [SDK guide](python-sdk.md#runnable-examples) provides application-level
 workflows. Keep example databases separate from normal operation. Stop example
 services with Ctrl+C; retain their credentials to repeat runs against the same database.
+
+## Verify the documented examples
+
+After installing the [optional Manager Suite packages](integrations/manager-suite.md#prepare-the-optional-examples)
+in your SDK environment, run from the Carrier checkout:
+
+```sh
+python scripts/verify_documentation_examples.py
+```
+
+The verifier uses fresh databases, dynamic loopback ports and real SDK processes.
+It checks all four manager handoffs, payloads, stable send retries, service restart,
+pagination, archive-before-ack, a correlated CI report and changed-payload conflicts.
+It stops its service and worker; the printed temporary directory retains evidence.
+No provider account or model turn is used. Remove only that directory when done.
 
 ## Check documentation
 
@@ -148,3 +166,22 @@ Ignore rules reduce accidental additions of local secrets and generated files.
 They do not remove tracked files or secrets already present in Git history.
 
 See [PyPI releases](releases.md) for Trusted Publisher setup and tag version rules.
+
+## Publish documentation
+
+`docs/publication.json` selects the source pages and stable project-site routes.
+General guides describe operation; architecture pages map implementation owners;
+examples include setup, expected results, recovery and cleanup. Keep runnable code
+in `examples/` and link to it rather than maintaining separate site copies.
+
+In the sibling project-site checkout, sync an exact committed Carrier revision:
+
+```sh
+npm run docs:sync -- --source ../carrier --repository https://github.com/Aixand/carrier --manifest docs/publication.json --revision SOURCE_SHA --output .
+npm run build
+```
+
+Replace `SOURCE_SHA` with the full commit SHA. Uncommitted review uses
+`--working-tree --output /tmp/carrier-doc-preview`; never deploy that preview.
+Runbooks, releases, installer qualification, policy and copied standards remain
+in Carrier even when they are not selected for the public site.

@@ -1,26 +1,50 @@
 # Launch a Codex conversation with Carrier
 
-This optional development-branch adapter connects Carrier to an external terminal
+This optional development-branch adapter connects Carrier to an Agent Manager terminal
 execution SDK. The adapter provisions Carrier identities and configures messaging
 tools; the runtime owns execution and session lifecycle. Carrier core runs independently.
 
-The current implementation requires the `agent-manager` extra and its runtime
-dependencies. Package names and imports below identify this specific adapter.
+The current implementation requires Agent Manager and its runtime
+dependencies. Use the source setup below while the optional dependency metadata
+retains legacy package names.
+
+```mermaid
+sequenceDiagram
+  accTitle: Carrier-owned agent launch and binding
+  accDescr: Carrier verifies an inbox and saves a launch intent. Agent Manager launches through its runtime. A native hook binds the exact conversation before Carrier MCP tools are enabled. A monitor reconciles termination.
+  participant App
+  participant Carrier as Carrier adapter
+  participant Agents as Agent Manager
+  participant Native as Native Codex
+  App->>Carrier: Stable launch operation UUID
+  Carrier->>Carrier: Verify identity and save intent
+  Carrier->>Agents: Launch with tools and lifecycle hooks
+  Agents->>Native: Terminal execution
+  Native->>Carrier: Bind exact conversation
+  Carrier-->>Native: Enable bound MCP tools
+  Carrier->>Agents: Observe termination before closing binding
+```
 
 ## Prepare the environment
 
-Use Python 3.11–3.14 with the optional `aixand-carrier-mcp[agent-manager]` dependencies. In a
-source checkout, replace the absolute paths below with the filesystem library,
-runtime SDK, local runtime library, and execution SDK source directories. Install
-into your selected virtual environment from the Carrier directory:
+Use Python 3.11–3.14 and the matching current source checkouts. Run from the
+Carrier directory in your application's environment:
 
 ```sh
-python -m pip install -e /absolute/path/filesystem -e /absolute/path/runtime-sdk \
-  -e /absolute/path/local-runtime \
-  -e '/absolute/path/execution-sdk[sdk]' -e '.[agent-manager]'
+python -m pip install .
+python -m pip install -e ../aixand-libraries/filesystem \
+  -e ../undercurrent/python -e ../aixand-libraries/local-runtime \
+  -e '../manager-suites/agent-manager[sdk]'
 ```
 
-Install matching runtime native binaries, start its daemon, and complete
+Carrier's `agent-manager` extra still declares the older distribution names
+`agent-manager` and `undercurrent-sdk`. Current Manager Suite uses
+`aixand-agent-manager` and `aixand-undercurrent-sdk`. The explicit source setup
+above installs the current owners without selecting those legacy dependencies.
+This is a packaging discrepancy; it does not establish that the published extra
+resolves the current integration. Core Carrier installation is independent.
+
+Install matching Undercurrent native binaries, start its daemon, and complete
 native Codex profile setup with `agent codex onboarding`. The adapter does not
 start either service or sign in. Start Carrier separately against the database
 that the adapter will use:
@@ -71,7 +95,8 @@ async with Client("codex") as agents:
     observation = await agents.execution_status(run.run_id)
 ```
 
-`operation_id` is a caller-created UUID. `CarrierAgents` borrows the execution SDK
+This is an async-function excerpt. Define `operation_id` as a UUID once and save
+it before dispatch. `operation_id` is a caller-created UUID. `CarrierAgents` borrows the execution SDK
 client and never closes it. `spawn`, `start`, and `continue_session` return its
 managed run handle. Credentials, addresses and conversation associations belong to
 Carrier. Credential contents do not appear in adapter journals or launch arguments;

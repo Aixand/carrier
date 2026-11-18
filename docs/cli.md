@@ -36,7 +36,7 @@ file or duplicate address. Reuse existing credentials to resume an identity.
 
 The CLI's `session` command creates a new identity. Applications requiring
 recoverable provisioning use the local `ensure_session()` API described in
-[the project setup](../README.md#python-sdk-setup).
+[identity and provisioning](architecture/trust.md).
 
 ## Client and adapter options
 
@@ -72,4 +72,6 @@ See [MCP setup](../README.md#mcp) for tool timeouts and reply correlation, and
 
 `carrier agent` provides `run`, `start`, `continue`, `adopt`, and `reconcile` through
 the optional agent launch adapter. See [setup, arguments and recovery](agent-manager.md).
-This subcommand requires the `agent-manager` extra; ordinary Carrier commands do not.
+This subcommand requires Agent Manager and its runtime dependencies; ordinary
+Carrier commands do not. Use the adapter guide's explicit source setup while
+Carrier's optional dependency metadata retains legacy distribution names.

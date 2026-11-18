@@ -1,0 +1,311 @@
+{
+  "schema": 1,
+  "project": "carrier",
+  "pages": [
+    {
+      "file": "concepts.md",
+      "slug": "concepts",
+      "section": "Concepts",
+      "order": 10
+    },
+    {
+      "file": "guides/example-setup.md",
+      "slug": "guides/example-setup",
+      "section": "Guides",
+      "order": 20
+    },
+    {
+      "file": "guides/mcp.md",
+      "slug": "guides/mcp",
+      "section": "Guides",
+      "order": 21
+    },
+    {
+      "file": "guides/operations.md",
+      "slug": "guides/operations",
+      "section": "Guides",
+      "order": 22
+    },
+    {
+      "file": "getting-started/install.md",
+      "slug": "installation",
+      "section": "Getting started",
+      "order": 1
+    },
+    {
+      "file": "quickstart.md",
+      "slug": "quickstart",
+      "section": "Getting started",
+      "order": 2
+    },
+    {
+      "file": "examples/agentic-review.md",
+      "slug": "agentic-review",
+      "section": "Agent workflows",
+      "order": 8,
+      "collection": "examples",
+      "tags": [
+        "Python",
+        "Agents"
+      ],
+      "downloads": [
+        "/manager-suite/examples/managed_agent.py",
+        "/carrier/examples/review_task.py"
+      ]
+    },
+    {
+      "file": "examples/managed-api-caller.md",
+      "slug": "managed-api-caller",
+      "section": "Connected workflows",
+      "order": 7,
+      "collection": "examples",
+      "tags": [
+        "Python",
+        "Integration"
+      ]
+    },
+    {
+      "file": "examples/mcp-exchange.md",
+      "slug": "mcp-exchange",
+      "section": "MCP workflows",
+      "order": 4,
+      "collection": "examples",
+      "recording": "mcp-exchange",
+      "recordingCaption": "Two scripted MCP clients exchange a request and correlated reply, then acknowledge both.",
+      "transcript": [
+        "Two separate Carrier stdio adapters authenticate separate inboxes.",
+        "The requester sends a review request; the reviewer returns a correlated reply.",
+        "Both clients acknowledge accepted messages. No AI model participates in the recording."
+      ],
+      "tags": [
+        "MCP"
+      ]
+    },
+    {
+      "file": "examples/offline-recovery.md",
+      "slug": "offline-recovery",
+      "section": "Python workflows",
+      "order": 3,
+      "collection": "examples",
+      "recording": "offline-recovery",
+      "recordingCaption": "Archive pending messages before acknowledgment and verify that a second scan finds no pending events.",
+      "transcript": [
+        "The producer stores build events while no consumer is running.",
+        "The workflow verifies message identity and explicitly acknowledges accepted events.",
+        "Retained message history remains available after acknowledgment."
+      ],
+      "tags": [
+        "Python"
+      ],
+      "downloads": [
+        "/carrier/examples/publish_build_event.py",
+        "/carrier/examples/archive_events.py"
+      ]
+    },
+    {
+      "file": "examples/persistent-service.md",
+      "slug": "persistent-service",
+      "section": "Connected workflows",
+      "order": 5,
+      "collection": "examples",
+      "tags": [
+        "Python",
+        "Integration"
+      ]
+    },
+    {
+      "file": "examples/request-report.md",
+      "slug": "request-report",
+      "section": "Python workflows",
+      "order": 1,
+      "collection": "examples",
+      "tags": [
+        "Python"
+      ],
+      "downloads": [
+        "/carrier/examples/request_report.py",
+        "/carrier/examples/report_worker.py"
+      ]
+    },
+    {
+      "file": "examples/retry-safe-send.md",
+      "slug": "retry-safe-send",
+      "section": "Python workflows",
+      "order": 2,
+      "collection": "examples",
+      "recording": "retry-safe-send",
+      "recordingCaption": "Publish the same event twice and verify that both sends return one stored message.",
+      "transcript": [
+        "The producer stores build events while no consumer is running.",
+        "The workflow verifies message identity and explicitly acknowledges accepted events.",
+        "Retained message history remains available after acknowledgment."
+      ],
+      "tags": [
+        "Python"
+      ],
+      "downloads": [
+        "/carrier/examples/publish_build_event.py"
+      ]
+    },
+    {
+      "file": "python-sdk.md",
+      "slug": "sdk/python",
+      "section": "Reference",
+      "order": 30
+    },
+    {
+      "file": "cli.md",
+      "slug": "reference/cli",
+      "section": "Reference",
+      "order": 40
+    },
+    {
+      "file": "agent-manager.md",
+      "slug": "integrations/agent-manager",
+      "section": "Integrations",
+      "order": 50
+    },
+    {
+      "file": "troubleshooting.md",
+      "slug": "troubleshooting",
+      "section": "Operations",
+      "order": 80
+    },
+    {
+      "file": "architecture/runtime.md",
+      "slug": "architecture",
+      "section": "Architecture",
+      "order": 11
+    },
+    {
+      "file": "architecture/storage.md",
+      "slug": "architecture/storage",
+      "section": "Architecture",
+      "order": 12
+    },
+    {
+      "file": "architecture/trust.md",
+      "slug": "architecture/trust",
+      "section": "Architecture",
+      "order": 13
+    },
+    {
+      "file": "lifecycles/delivery.md",
+      "slug": "lifecycles/delivery",
+      "section": "Lifecycles",
+      "order": 14
+    },
+    {
+      "file": "reference/http.md",
+      "slug": "reference/http",
+      "section": "Reference",
+      "order": 41
+    },
+    {
+      "file": "reference/budget.md",
+      "slug": "reference/budget",
+      "section": "Reference",
+      "order": 42
+    },
+    {
+      "file": "integrations/manager-suite.md",
+      "slug": "integrations/manager-suite",
+      "section": "Integrations",
+      "order": 49
+    },
+    {
+      "file": "development.md",
+      "slug": "development",
+      "section": "Development",
+      "order": 90
+    },
+    {
+      "file": "examples/README.md",
+      "slug": "guides/examples",
+      "section": "Getting started",
+      "order": 3
+    },
+    {
+      "file": "examples/prompt-handoff.md",
+      "slug": "prompt-handoff",
+      "section": "Manager Suite workflows",
+      "order": 20,
+      "collection": "examples",
+      "tags": [
+        "Python",
+        "Manager Suite"
+      ],
+      "downloads": [
+        "/carrier/examples/manager_handoff.py"
+      ]
+    },
+    {
+      "file": "examples/skill-result.md",
+      "slug": "skill-result",
+      "section": "Manager Suite workflows",
+      "order": 21,
+      "collection": "examples",
+      "tags": [
+        "Python",
+        "Manager Suite"
+      ],
+      "downloads": [
+        "/carrier/examples/manager_handoff.py"
+      ]
+    },
+    {
+      "file": "examples/mcp-definition.md",
+      "slug": "mcp-definition",
+      "section": "Manager Suite workflows",
+      "order": 22,
+      "collection": "examples",
+      "tags": [
+        "Python",
+        "Manager Suite"
+      ],
+      "downloads": [
+        "/carrier/examples/manager_handoff.py"
+      ]
+    },
+    {
+      "file": "examples/conversation-result.md",
+      "slug": "conversation-result",
+      "section": "Manager Suite workflows",
+      "order": 23,
+      "collection": "examples",
+      "tags": [
+        "Python",
+        "Manager Suite"
+      ],
+      "downloads": [
+        "/carrier/examples/manager_handoff.py"
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "file": "examples/request_report.py",
+      "target": "public/carrier/examples/request_report.py"
+    },
+    {
+      "file": "examples/report_worker.py",
+      "target": "public/carrier/examples/report_worker.py"
+    },
+    {
+      "file": "examples/publish_build_event.py",
+      "target": "public/carrier/examples/publish_build_event.py"
+    },
+    {
+      "file": "examples/archive_events.py",
+      "target": "public/carrier/examples/archive_events.py"
+    },
+    {
+      "file": "examples/review_task.py",
+      "target": "public/carrier/examples/review_task.py"
+    },
+    {
+      "file": "examples/manager_handoff.py",
+      "target": "public/carrier/examples/manager_handoff.py"
+    }
+  ]
+}
